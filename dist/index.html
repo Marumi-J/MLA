@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="一个打字稿风格的 My Little Airport 歌词收藏网页。">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="manifest" href="manifest.webmanifest?v=15">
+  <link rel="stylesheet" href="styles.css?v=15">
+  <title>My Little Lyrics</title>
+</head>
+<body>
+  <svg class="print-filters" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="ink-main" x="-8%" y="-10%" width="116%" height="120%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.025 0.58" numOctaves="2" seed="17" result="mainNoise"/>
+        <feDisplacementMap in="SourceGraphic" in2="mainNoise" scale="0.85" xChannelSelector="R" yChannelSelector="G" result="mainRough"/>
+        <feGaussianBlur in="mainRough" stdDeviation="0.24" result="mainWet"/>
+        <feComponentTransfer in="mainWet" result="mainHalo"><feFuncA type="linear" slope="0.24"/></feComponentTransfer>
+        <feTurbulence type="fractalNoise" baseFrequency="0.16 0.21" numOctaves="1" seed="61" result="mainDustNoise"/>
+        <feColorMatrix in="mainDustNoise" type="luminanceToAlpha" result="mainDustAlpha"/>
+        <feComponentTransfer in="mainDustAlpha" result="mainDustSparse"><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer>
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.35" result="mainDustZone"/>
+        <feComposite in="mainDustSparse" in2="mainDustZone" operator="in" result="mainDustNear"/>
+        <feComposite in="mainDustNear" in2="SourceAlpha" operator="out" result="mainDustOutside"/>
+        <feFlood flood-color="#241f1e" flood-opacity="0.42" result="mainDustInk"/>
+        <feComposite in="mainDustInk" in2="mainDustOutside" operator="in" result="mainSpecks"/>
+        <feMerge>
+          <feMergeNode in="mainHalo"/>
+          <feMergeNode in="mainSpecks"/>
+          <feMergeNode in="mainRough"/>
+        </feMerge>
+      </filter>
+      <filter id="ink-light" x="-6%" y="-8%" width="112%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035 0.64" numOctaves="2" seed="23" result="lightNoise"/>
+        <feDisplacementMap in="SourceGraphic" in2="lightNoise" scale="0.46" xChannelSelector="R" yChannelSelector="G" result="lightRough"/>
+        <feGaussianBlur in="lightRough" stdDeviation="0.14" result="lightWet"/>
+        <feComponentTransfer in="lightWet" result="lightHalo"><feFuncA type="linear" slope="0.14"/></feComponentTransfer>
+        <feTurbulence type="fractalNoise" baseFrequency="0.18 0.24" numOctaves="1" seed="37" result="lightDustNoise"/>
+        <feColorMatrix in="lightDustNoise" type="luminanceToAlpha" result="lightDustAlpha"/>
+        <feComponentTransfer in="lightDustAlpha" result="lightDustSparse"><feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer>
+        <feMorphology in="SourceAlpha" operator="dilate" radius="0.85" result="lightDustZone"/>
+        <feComposite in="lightDustSparse" in2="lightDustZone" operator="in" result="lightDustNear"/>
+        <feComposite in="lightDustNear" in2="SourceAlpha" operator="out" result="lightDustOutside"/>
+        <feFlood flood-color="#241f1e" flood-opacity="0.3" result="lightDustInk"/>
+        <feComposite in="lightDustInk" in2="lightDustOutside" operator="in" result="lightSpecks"/>
+        <feMerge>
+          <feMergeNode in="lightHalo"/>
+          <feMergeNode in="lightSpecks"/>
+          <feMergeNode in="lightRough"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+  <header class="site-header">
+    <button class="wordmark" data-route="home" aria-label="返回首页">
+      <span>my little</span><span>lyrics</span>
+    </button>
+    <div class="header-actions"><span id="syncStatus" aria-live="polite"></span><button class="round-button" id="openManager" aria-label="管理歌词">＋</button></div>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <nav class="bottom-nav" aria-label="主要导航">
+    <button data-route="home" class="nav-item active">搜索</button>
+    <button data-route="library" class="nav-item">曲库</button>
+    <button data-route="saved" class="nav-item">收藏</button>
+  </nav>
+
+  <dialog id="managerDialog">
+    <form method="dialog" class="dialog-card" id="songForm">
+      <div class="dialog-heading">
+        <h2 id="dialogTitle">添加歌词</h2>
+        <button type="button" class="icon-button" id="closeManager" aria-label="关闭">×</button>
+      </div>
+      <input type="hidden" id="songId">
+      <label>歌名<input id="songTitle" autocomplete="off"></label>
+      <div class="form-row">
+        <label>专辑<input id="songAlbum"></label>
+        <label>年份<input id="songYear" inputmode="numeric"></label>
+      </div>
+      <label>歌词<textarea id="songLyrics" rows="11"></textarea></label>
+      <div class="dialog-actions">
+        <button type="button" class="text-button danger hidden" id="deleteSong">删除</button>
+        <button type="button" class="text-button" id="cancelManager">取消</button>
+        <button type="submit" class="primary-button">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="vendor/opencc.full.js?v=1"></script>
+  <script src="app.js?v=15"></script>
+</body>
+</html>
+

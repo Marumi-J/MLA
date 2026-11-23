@@ -1,0 +1,10 @@
+{
+  "name": "My Little Lyrics",
+  "short_name": "Little Lyrics",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "打字稿风格的歌词收藏。"
+}
+

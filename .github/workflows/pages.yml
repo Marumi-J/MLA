@@ -1,0 +1,44 @@
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add bundled fonts and converter
+        shell: bash
+        run: |
+          mkdir -p dist/fonts dist/vendor
+          curl --fail --location --retry 3 \
+            https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/Mono/NotoSansMonoCJKhk-Regular.otf \
+            --output dist/fonts/NotoSansMonoCJKhk-Regular.otf
+          curl --fail --location --retry 3 \
+            https://cdn.jsdelivr.net/npm/opencc-js@1.4.2/dist/umd/full.js \
+            --output dist/vendor/opencc.full.js
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+
