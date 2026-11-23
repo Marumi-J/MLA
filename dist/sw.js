@@ -1,5 +1,5 @@
-const CACHE = 'my-little-lyrics-v15';
-const CORE = ['./', './index.html', './styles.css?v=15', './vendor/opencc.full.js?v=1', './app.js?v=15', './tracks.json?v=1', './manifest.webmanifest?v=15', './fonts/NotoSansMonoCJKhk-Regular.otf'];
+const CACHE = 'my-little-lyrics-v16';
+const CORE = ['./', './index.html', './styles.css?v=16', './vendor/opencc.full.js?v=1', './app.js?v=16', './tracks.json?v=1', './manifest.webmanifest?v=16', './fonts/NotoSansMonoCJKhk-Regular.otf'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));

@@ -302,7 +302,7 @@ async function init() {
   render();
   await syncCatalog();
   prepareOfflineLyrics();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js?v=15');
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js?v=16');
 }
 
 init();
